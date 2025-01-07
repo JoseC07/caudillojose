@@ -1,5 +1,3 @@
-'use client'
-
 import { Canvas } from '@react-three/fiber'
 import Globe from './Globe'
 import NavigationButtons from '../NavigationButtons'
@@ -32,17 +30,26 @@ export default function GlobeNavigation({ onCityChange }: GlobeNavigationProps) 
   }
 
   return (
-    <div className="fixed inset-0">
+    <div className="fixed inset-0 pointer-events-none z-50">
       <Canvas
         camera={{ position: [0, 0, 5] }}
-        style={{ width: '100vw', height: '100vh', background: 'black' }}
+        style={{ 
+          width: '100vw', 
+          height: '100vh', 
+          background: 'transparent',
+          position: 'absolute',
+          top: 0,
+          left: 0
+        }}
       >
         <Globe selectedCityIndex={selectedCityIndex} />
       </Canvas>
-      <NavigationButtons
-        handleNextCity={handleNextCity}
-        handlePreviousCity={handlePreviousCity}
-      />
+      <div className="pointer-events-auto">
+        <NavigationButtons
+          handleNextCity={handleNextCity}
+          handlePreviousCity={handlePreviousCity}
+        />
+      </div>
     </div>
   )
 } 

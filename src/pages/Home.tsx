@@ -1,12 +1,10 @@
-'use client'
-
 import { useState } from 'react'
 import GlobeNavigation from '../components/three/GlobeNavigation'
 import CityContent from '../components/CityContent'
 import { Helmet } from 'react-helmet-async'
 
 export default function Home() {
-  const [currentCity, setCurrentCity] = useState('New York') // Default city
+  const [currentCity, setCurrentCity] = useState('New York')
 
   return (
     <>
@@ -16,12 +14,18 @@ export default function Home() {
           name="description"
           content="Welcome to my interactive portfolio homepage, featuring a 3D globe navigation."
         />
-        {/* You can add more meta tags below, e.g. Open Graph, Twitter Card tags */}
       </Helmet>
 
-      <main className="relative min-h-screen">
-        <GlobeNavigation onCityChange={setCurrentCity} />
-        <CityContent cityName={currentCity} />
+      <main className="relative min-h-screen overflow-hidden">
+        {/* Background Content Layer */}
+        <div className="relative z-0">
+          <CityContent cityName={currentCity} />
+        </div>
+
+        {/* Globe Layer */}
+        <div className="relative z-10">
+          <GlobeNavigation onCityChange={setCurrentCity} />
+        </div>
       </main>
     </>
   )

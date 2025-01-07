@@ -15,6 +15,7 @@ export default function Globe({ selectedCityIndex }: GlobeProps) {
 
   const { width } = useWindowSize()
   const globeScale = width < 768 ? 0.8 : 1
+  const fontSize = width < 768 ? '8px' : '12px'
 
   const cities = [
     { name: 'New York', lat: 40.7128, lon: -74.006 },
@@ -86,7 +87,14 @@ export default function Globe({ selectedCityIndex }: GlobeProps) {
                 <meshBasicMaterial color="red" />
               </Sphere>
               <Html distanceFactor={10}>
-                <div style={{ color: 'white', fontSize: '12px' }}>{city.name}</div>
+                <div style={{ 
+                  color: 'black', 
+                  fontSize: fontSize,
+                  whiteSpace: 'nowrap',
+                  pointerEvents: 'none'
+                }}>
+                  {city.name}
+                </div>
               </Html>
             </group>
           )

@@ -1,4 +1,3 @@
-
 type NavigationButtonsProps = {
   handleNextCity: () => void
   handlePreviousCity: () => void
@@ -11,15 +10,16 @@ export default function NavigationButtons({
   return (
     <div
       style={{
-        position: 'fixed',
-        top: '80%',
+        position: 'absolute',
+        bottom: '20%',
         left: '50%',
-        transform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, 50%)',
         width: '80%',
         display: 'flex',
         justifyContent: 'space-between',
         padding: '0 40px',
         boxSizing: 'border-box',
+        zIndex: 10,
       }}
     >
       <button
