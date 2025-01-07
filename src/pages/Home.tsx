@@ -1,32 +1,28 @@
 'use client'
 
-import { Canvas } from '@react-three/fiber'
-import Globe from '../components/three/Globe'
-import NavigationButtons from '../components/NavigationButtons'
 import { useState } from 'react'
+import GlobeNavigation from '../components/three/GlobeNavigation'
+import CityContent from '../components/CityContent'
+import { Helmet } from 'react-helmet-async'
 
 export default function Home() {
-  const [selectedCityIndex, setSelectedCityIndex] = useState(0)
-
-  const handleNextCity = () => {
-    setSelectedCityIndex((prev) => (prev + 1) % 4)
-  }
-  const handlePreviousCity = () => {
-    setSelectedCityIndex((prev) => (prev === 0 ? 3 : prev - 1))
-  }
+  const [currentCity, setCurrentCity] = useState('New York') // Default city
 
   return (
-    <div className="fixed inset-0">
-      <Canvas
-        camera={{ position: [0, 0, 5] }}
-        style={{ width: '100vw', height: '100vh', background: 'black' }}
-      >
-        <Globe selectedCityIndex={selectedCityIndex} />
-      </Canvas>
-      <NavigationButtons
-        handleNextCity={handleNextCity}
-        handlePreviousCity={handlePreviousCity}
-      />
-    </div>
+    <>
+      <Helmet>
+        <title>Home | About Me</title>
+        <meta
+          name="description"
+          content="Welcome to my interactive portfolio homepage, featuring a 3D globe navigation."
+        />
+        {/* You can add more meta tags below, e.g. Open Graph, Twitter Card tags */}
+      </Helmet>
+
+      <main className="relative min-h-screen">
+        <GlobeNavigation onCityChange={setCurrentCity} />
+        <CityContent cityName={currentCity} />
+      </main>
+    </>
   )
 } 
