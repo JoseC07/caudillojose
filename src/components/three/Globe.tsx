@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Mesh } from 'three'
 import { OrbitControls, Sphere, Html, Line } from '@react-three/drei'
