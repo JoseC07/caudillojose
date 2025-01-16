@@ -22,3 +22,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+v
+
+# Lighthouse reports
+*.report.html
+lighthouse-*.json
+.lighthouseci/
+lighthouserc.json
+
+# Build and test artifacts
+dist/
+coverage/
+.nyc_output/
