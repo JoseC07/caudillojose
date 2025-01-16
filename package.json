@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "lighthouse": "lighthouse http://localhost:4173 --chrome-flags=\"--headless --no-sandbox --disable-gpu\" --output html --output-path ./lighthouse-report.html"
+    "lighthouse": "pnpm run preview & sleep 2 && lighthouse http://localhost:4173 --view && kill $!"
   },
   "dependencies": {
     "@react-three/drei": "^9.120.5",

@@ -74,6 +74,18 @@ export default function Globe({ selectedCityIndex }: GlobeProps) {
     curves.map(curve => new THREE.BufferGeometry().setFromPoints(curve.getPoints(50)))
   , [curves])
 
+  // Memoize the arrows configuration to prevent recreating on every render
+  const arrowsConfig = useMemo(() => 
+    curves.map((curve, index) => ({
+      curve,
+      index,
+      // You could add more static configuration here if needed
+      speed: 0.2,
+      baseScale: 0.8,
+      scaleVariation: 0.2
+    }))
+  , [curves]) // Only recreate if curves change
+
   return (
     <>
       <ambientLight intensity={0.5} />
@@ -92,9 +104,12 @@ export default function Globe({ selectedCityIndex }: GlobeProps) {
           </line>
         ))}
 
-        {/* Add moving arrows on each curve */}
-        {curves.map((curve, idx) => (
-          <MovingArrow key={`arrow-${idx}`} curve={curve} index={idx} />
+        {/* Optimized arrows rendering */}
+        {arrowsConfig.map(config => (
+          <MovingArrow 
+            key={`arrow-${config.index}`} 
+            {...config}
+          />
         ))}
 
         {/* Existing city markers */}
@@ -118,17 +133,33 @@ export default function Globe({ selectedCityIndex }: GlobeProps) {
   )
 }
 
+// Optimized MovingArrow component
 function MovingArrow({
   curve,
   index,
+  speed = 0.2,
+  baseScale = 0.8,
+  scaleVariation = 0.2
 }: {
   curve: THREE.QuadraticBezierCurve3
   index: number
+  speed?: number
+  baseScale?: number
+  scaleVariation?: number
 }) {
   const ref = useRef<THREE.Mesh>(null!)
+  
+  // Memoize the arrow material to prevent recreation
+  const material = useMemo(() => 
+    new THREE.MeshBasicMaterial({ 
+      color: 'skyblue', 
+      opacity: 0.6, 
+      transparent: true 
+    })
+  , [])
 
   useFrame((state) => {
-    const t = (state.clock.getElapsedTime() * 0.2) % 1
+    const t = (state.clock.getElapsedTime() * speed) % 1
     const arrowPosition = curve.getPoint(t)
     const arrowDirection = curve.getTangent(t).normalize()
     const arrowQuaternion = new THREE.Quaternion().setFromUnitVectors(
@@ -139,7 +170,7 @@ function MovingArrow({
     if (ref.current) {
       ref.current.position.copy(arrowPosition)
       ref.current.quaternion.copy(arrowQuaternion)
-      const scaleFactor = 0.8 + 0.2 * Math.sin(t * Math.PI * 2 + index)
+      const scaleFactor = baseScale + scaleVariation * Math.sin(t * Math.PI * 2 + index)
       ref.current.scale.set(scaleFactor, scaleFactor, scaleFactor)
     }
   })
@@ -147,7 +178,8 @@ function MovingArrow({
   return (
     <mesh ref={ref}>
       <coneGeometry args={[0.01, 0.025, 8]} />
-      <meshBasicMaterial color="skyblue" opacity={0.6} transparent={true} />
+      {/* Use memoized material */}
+      <primitive object={material} />
     </mesh>
   )
 } 
