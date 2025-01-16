@@ -22,7 +22,17 @@ export default function Globe({ selectedCityIndex }: GlobeProps) {
   const { width } = useWindowSize()
   const globeScale = width < 768 ? 0.8 : 1
 
-  const latLonToVector3 = (lat: number, lon: number) => {
+  // Memoize the geometry and material for the globe
+  const globeGeometry = useMemo(() => new THREE.SphereGeometry(1, 32, 32), [])
+  const globeMaterial = useMemo(() => 
+    new THREE.MeshPhongMaterial({ 
+      color: "#808080", 
+      wireframe: true 
+    })
+  , [])
+
+  // Memoize the latLonToVector3 function
+  const latLonToVector3 = useMemo(() => (lat: number, lon: number) => {
     const phi = (90 - lat) * (Math.PI / 180)
     const theta = (lon + 180) * (Math.PI / 180)
     const radius = 1.01
@@ -32,7 +42,7 @@ export default function Globe({ selectedCityIndex }: GlobeProps) {
       radius * Math.cos(phi),
       radius * Math.sin(phi) * Math.sin(theta)
     )
-  }
+  }, [])
 
   useFrame((_, delta) => {
     meshRef.current.rotation.y += delta * 0.2
@@ -92,10 +102,7 @@ export default function Globe({ selectedCityIndex }: GlobeProps) {
       <pointLight position={[10, 10, 10]} />
 
       <group scale={[globeScale, globeScale, globeScale]}>
-        <mesh ref={meshRef}>
-          <sphereGeometry args={[1, 32, 32]} />
-          <meshPhongMaterial color="#808080" wireframe={true} />
-        </mesh>
+        <mesh ref={meshRef} geometry={globeGeometry} material={globeMaterial} />
 
         {/* Draw the curves */}
         {curvePoints.map((geometry, idx) => (
